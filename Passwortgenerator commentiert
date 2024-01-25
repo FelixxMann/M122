@@ -1,0 +1,100 @@
+# Eingabeaufforderungen für Passwortanforderungen:
+
+Write-Host "Geben Sie die Anforderungen für Ihr Passwort ein"
+
+# Eingabeaufforderung für Passwortlänge
+do {
+    $Input1 = Read-Host "Passwortlänge (Zahl)"
+    if ($Input1 -match '^\d+$') 
+    {
+        $PwLength = [int]$Input1
+        break
+    } 
+    else 
+    {
+        Write-Host "Bitte geben Sie eine Nummer ein."
+    }
+} while ($true)
+
+# Eingabeaufforderungen für Gross- und Kleinschreibung, Nummern, und Sonderzeichen
+do {
+    $BigandSmall = Read-Host "Gross- und Kleinschreibung (Ja/Nein)"
+    $BigandSmall = $BigandSmall.Trim().ToLower()
+
+    if ($BigandSmall -eq "ja") 
+    {
+        $BigandSmall = "ja"
+        break
+    }
+    elseif ($BigandSmall -eq "nein") 
+    {
+        $BigandSmall = "nein"
+        break
+    }
+    else 
+    {
+        Write-Host "Ungültige Eingabe, schreiben Sie Ja oder Nein."
+    }
+} until ($BigandSmall -eq "ja" -or $BigandSmall -eq "nein")
+
+# (Ähnliche Blöcke für Nummern und Sonderzeichen)
+
+# Anzeige der Passworteinstellungen
+Write-Host "Ihre Passworteinstellungen sind:"
+Write-Host "  Länge: $PwLength"
+Write-Host "  Gross- und Kleinschreibung: $BigandSmall"
+Write-Host "  Nummern: $Nummbers"
+Write-Host "  Sonderzeichen: $SpecialCharakters"
+
+# Passwortgenerierung
+do { 
+    Write-Host "Drücken Sie Enter, um Ihr Passwort zu generieren"
+    $null = $Host.UI.RawUI.ReadKey('NoEcho,IncludeKeyDown').Character
+    Start-Sleep -Seconds 2
+
+    if ($BigandSmall -eq "ja" -and $Nummbers -eq "ja" -and $SpecialCharakters -eq "ja")
+    {
+        # Funktion zur Generierung von zufälligen Buchstaben, Zahlen und Sonderzeichen
+        function Get-RandomLetter 
+        {
+            $characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz123456789.,;:!?+*%&/=-_'"
+            $randomIndex = Get-Random -Minimum 0 -Maximum $characters.Length
+            $randomLetter = $characters[$randomIndex]
+            return $randomLetter
+        }
+
+        $anzahlBuchstaben = $PwLength
+        $Password = -join (1..$anzahlBuchstaben | ForEach-Object { Get-RandomLetter })
+        Write-Host "Ihr Passwort ist $Password"
+    }
+    elseif ($BigandSmall -eq "ja")  # Funktion zur Generierung von zufälligen Buchstaben gross und Klein
+            { 
+            function Get-RandomLetter 
+                {
+                    $characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
+                    $randomIndex = Get-Random -Minimum 0 -Maximum $characters.Length
+                    $randomLetter = $characters[$randomIndex]
+                    return $randomLetter
+                }
+
+                $anzahlBuchstaben = $PwLength
+                $Password = -join (1..$anzahlBuchstaben | ForEach-Object { Get-RandomLetter })
+                Write-Host "Ihr Passwort ist $Password"
+            break
+            }
+    elseif ($Nummbers -eq "ja") # Funktion zur Generierung von zufälligen Nummern
+            { 
+            function Get-RandomLetter 
+                {
+                    $characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ123456789"
+                    $randomIndex = Get-Random -Minimum 0 -Maximum $characters.Length
+                    $randomLetter = $characters[$randomIndex]
+                    return $randomLetter
+                }
+
+                $anzahlBuchstaben = $PwLength
+                $Password = -join (1..$anzahlBuchstaben | ForEach-Object { Get-RandomLetter })
+                Write-Host "Ihr Passwort ist $Password"
+            break
+    }
+} until ($Password -eq [string])
